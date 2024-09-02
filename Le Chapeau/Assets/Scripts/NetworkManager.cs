@@ -27,12 +27,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         PhotonNetwork.ConnectUsingSettings();
     }
 
-    public override void OnConnectedToMaster()
-    {
-        Debug.Log("Connected to master server");
-        CreateRoom("testroom");
-    }
-
     public void CreateRoom (string roomName)
     {
         PhotonNetwork.CreateRoom(roomName);
@@ -48,6 +42,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         PhotonNetwork.JoinRoom(roomName);
     }
 
+    [PunRPC]
     public void ChangeScene (string sceneName)
     {
         PhotonNetwork.LoadLevel(sceneName);
