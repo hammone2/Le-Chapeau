@@ -54,4 +54,47 @@ public class Menu : MonoBehaviourPunCallbacks
     {
         PhotonNetwork.NickName = playerNameInput.text;
     }
+
+    public override void OnJoinedRoom ()
+    {
+        SetScreen(lobbyScreen);
+
+        photonView.RPC("Update Lobby UI", RpcTarget.All);
+    }
+
+    public override void OnPlayerLeftRoom(Player otherPlayer)
+    {
+        UpdateLobbyUI();
+    }
+
+    [PunRPC]
+    public void UpdateLobbyUI()
+    {
+        playerListText.text = "";
+
+        foreach (Player player in PhotonNetwork.PlayerList)
+        {
+            playerListText.text += player.NickName + "\n";
+        }
+
+        if (PhotonNetwork.IsMasterClient)
+        {
+            startGameButton.interactable = true;
+        }
+        else
+        {
+            startGameButton.interactable = false;
+        }
+    }
+
+    public void OnLeaveLobbyButton()
+    {
+        PhotonNetwork.LeaveRoom();
+        SetScreen(mainScreen);
+    }
+
+    public void OnStartGameButton()
+    {
+        NetworkManager.instance.photonView.RPC("ChangeScene", RpcTarget.All, "Game");
+    }
 }
